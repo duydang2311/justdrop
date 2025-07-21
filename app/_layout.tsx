@@ -1,7 +1,9 @@
 import 'expo-dev-client';
 
 import ConfigInitializer from '@/lib/components/ConfigInitializer';
+import { ServicesProvider } from '@/lib/components/ServicesProvider';
 import { useConfig } from '@/lib/stores/config';
+import { createSupabase } from '@/lib/supabase';
 import { useThemedStyleSheet } from '@/lib/theme';
 import { Stack } from 'expo-router';
 import { SystemBars } from 'react-native-edge-to-edge';
@@ -11,7 +13,7 @@ export default function RootLayout() {
   const styles = useStyles();
 
   return (
-    <>
+    <ServicesProvider supabase={supabase}>
       <ConfigInitializer />
       <SystemBars style={colorScheme === 'dark' ? 'light' : 'dark'} />
       <Stack
@@ -25,9 +27,22 @@ export default function RootLayout() {
       >
         <Stack.Screen name="index" options={{ title: 'JustDrop' }} />
       </Stack>
-    </>
+    </ServicesProvider>
   );
 }
+
+if (process.env.EXPO_PUBLIC_SUPABASE_URL == null) {
+  throw new Error('Missing EXPO_PUBLIC_SUPABASE_URL');
+}
+
+if (process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY == null) {
+  throw new Error('Missing EXPO_PUBLIC_SUPABASE_ANON_KEY');
+}
+
+const supabase = createSupabase(
+  process.env.EXPO_PUBLIC_SUPABASE_URL,
+  process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY
+);
 
 const useStyles = () => {
   return useThemedStyleSheet((theme) => {
