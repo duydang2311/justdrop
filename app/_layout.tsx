@@ -1,5 +1,3 @@
-import 'expo-dev-client';
-
 import ConfigInitializer from '@/lib/components/ConfigInitializer';
 import { ServicesProvider } from '@/lib/components/ServicesProvider';
 import { useConfig } from '@/lib/stores/config';
@@ -31,17 +29,9 @@ export default function RootLayout() {
   );
 }
 
-if (process.env.EXPO_PUBLIC_SUPABASE_URL == null) {
-  throw new Error('Missing EXPO_PUBLIC_SUPABASE_URL');
-}
-
-if (process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY == null) {
-  throw new Error('Missing EXPO_PUBLIC_SUPABASE_ANON_KEY');
-}
-
 const supabase = createSupabase(
-  process.env.EXPO_PUBLIC_SUPABASE_URL,
-  process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY
+  process.env.EXPO_PUBLIC_SUPABASE_URL!,
+  process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!
 );
 
 const useStyles = () => {
