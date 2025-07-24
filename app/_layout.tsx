@@ -4,7 +4,7 @@ import { useConfig } from '@/lib/stores/config';
 import { createSupabase } from '@/lib/supabase';
 import { useThemedStyleSheet } from '@/lib/theme';
 import { Stack } from 'expo-router';
-import { SystemBars } from 'react-native-edge-to-edge';
+import { StatusBar } from 'expo-status-bar';
 
 export default function RootLayout() {
   const colorScheme = useConfig((a) => a.colorScheme);
@@ -13,7 +13,7 @@ export default function RootLayout() {
   return (
     <ServicesProvider supabase={supabase}>
       <ConfigInitializer />
-      <SystemBars style={colorScheme === 'dark' ? 'light' : 'dark'} />
+      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
       <Stack
         screenOptions={{
           headerStyle: styles.header,
