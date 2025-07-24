@@ -1,54 +1,48 @@
 import ConfigInitializer from '@/lib/components/ConfigInitializer';
 import { ServicesProvider } from '@/lib/components/ServicesProvider';
-import { useConfig } from '@/lib/stores/config';
+import { useApp } from '@/lib/stores/app';
+import { useServices } from '@/lib/stores/services';
 import { createSupabase } from '@/lib/supabase';
-import { useThemedStyleSheet } from '@/lib/theme';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
+import { Slot } from 'expo-router';
+import { useEffect, useRef, useState } from 'react';
 
 export default function RootLayout() {
-  const colorScheme = useConfig((a) => a.colorScheme);
-  const styles = useStyles();
+  const [sessionInitialized, setSessionInitialized] = useState(false);
 
   return (
     <ServicesProvider supabase={supabase}>
       <ConfigInitializer />
-      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-      <Stack
-        screenOptions={{
-          headerStyle: styles.header,
-          headerTitleStyle: styles.headerTitle,
-          headerLargeTitle: true,
-          headerLargeTitleShadowVisible: true,
-          headerLargeTitleStyle: styles.headerLargeTitle,
-        }}
-      >
-        <Stack.Screen name="index" options={{ title: 'JustDrop' }} />
-      </Stack>
+      <SessionInitializer onInitialized={() => setSessionInitialized(true)} />
+      {sessionInitialized && <Slot />}
     </ServicesProvider>
   );
+}
+
+function SessionInitializer({ onInitialized }: { onInitialized: () => void }) {
+  const supabase = useServices((a) => a.supabase);
+  const setSession = useApp((a) => a.setSession);
+  const initializedRef = useRef(false);
+
+  useEffect(() => {
+    // supabase.auth.signOut();
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_e, session) => {
+      if (!initializedRef.current) {
+        initializedRef.current = true;
+        onInitialized();
+      }
+      console.log('Auth state changed:', _e, session);
+      setSession(session);
+    });
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [onInitialized, supabase, setSession]);
+  return <></>;
 }
 
 const supabase = createSupabase(
   process.env.EXPO_PUBLIC_SUPABASE_URL!,
   process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!
 );
-
-const useStyles = () => {
-  return useThemedStyleSheet((theme) => {
-    return {
-      header: {
-        backgroundColor: theme.colors.base,
-      },
-      headerTitle: {
-        color: theme.colors.base_fg,
-        fontWeight: '700',
-      },
-      headerLargeTitle: {
-        color: theme.colors.base_fg,
-        fontSize: theme.fontSize.h1,
-        fontWeight: '700',
-      },
-    };
-  }, []);
-};

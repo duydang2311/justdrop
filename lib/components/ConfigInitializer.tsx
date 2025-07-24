@@ -1,11 +1,11 @@
-import { useConfig } from '@/lib/stores/config';
+import { useApp } from '@/lib/stores/app';
 import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 import { useShallow } from 'zustand/shallow';
 
 export default function ConfigInitializer() {
   const systemColorScheme = useColorScheme();
-  const { preferredColorScheme, setColorScheme } = useConfig(
+  const { preferredColorScheme, setColorScheme } = useApp(
     useShallow(({ preferredColorScheme, setColorScheme }) => ({
       preferredColorScheme,
       setColorScheme,

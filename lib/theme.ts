@@ -1,6 +1,6 @@
 import { DependencyList, useCallback, useMemo } from 'react';
 import { StyleSheet } from 'react-native';
-import { useConfig } from './stores/config';
+import { useApp } from './stores/app';
 
 export type Theme = typeof themeBase & {
   colors: Record<keyof typeof theme.light.colors, string>;
@@ -43,7 +43,7 @@ const theme = {
 } as const;
 
 export const useTheme = () => {
-  const colorScheme = useConfig((a) => a.colorScheme);
+  const colorScheme = useApp((a) => a.colorScheme);
   return useMemo(
     () => ({
       ...themeBase,
