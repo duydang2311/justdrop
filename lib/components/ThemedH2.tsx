@@ -8,8 +8,11 @@ export default function ThemedH2({ style, ...props }: Props) {
     return {
       text: {
         fontSize: theme.fontSize.h2,
-        color: theme.colors.base_fg,
-        fontWeight: 700
+        color: theme.resolve(
+          theme.colors.base_fg_dark,
+          theme.colors.base_fg_light
+        ),
+        fontWeight: 700,
       },
     };
   }, []);

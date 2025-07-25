@@ -3,13 +3,15 @@ import ThemedH2 from '@/lib/components/ThemedH2';
 import ThemedText from '@/lib/components/ThemedText';
 import { useApp } from '@/lib/stores/app';
 import { useServices } from '@/lib/stores/services';
+import { AppSupabase } from '@/lib/supabase';
+import { Database } from '@/lib/supabase-types';
 import { useThemedStyleSheet } from '@/lib/theme';
-import { getDocumentAsync } from 'expo-document-picker';
+import { attempt } from '@duydang2311/attempt';
+import { DocumentPickerAsset, getDocumentAsync } from 'expo-document-picker';
 import { Directory, File, Paths } from 'expo-file-system/next';
-import { useState } from 'react';
+import { useRouter } from 'expo-router';
 import { SafeAreaView, ScrollView } from 'react-native';
-import QRCode from 'react-native-qrcode-svg';
-import { RTCPeerConnection } from 'react-native-webrtc';
+import type { } from 'react-native-webrtc';
 import invariant from 'tiny-invariant';
 
 declare module 'react-native-webrtc' {
@@ -25,7 +27,7 @@ export default function Index() {
   const styles = useStyles();
   const supabase = useServices((a) => a.supabase);
   const session = useApp((a) => a.session);
-  const [transferId, setTransferId] = useState<string | null>(null);
+  const router = useRouter();
 
   invariant(session, 'session must not be null');
 
@@ -39,67 +41,46 @@ export default function Index() {
       return;
     }
 
-    const pc = new RTCPeerConnection({
-      iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
+    const created = await createTransfer(supabase)({
+      created_by: session.user.id, // TODO: use db trigger
+      assets: result.assets.map((a) => ({
+        name: a.name,
+        size: a.size ?? 0,
+        mimeType: a.mimeType,
+      })),
     });
-    const offer = await pc.createOffer(undefined);
-    await pc.setLocalDescription(offer);
 
-    const transfer = await supabase
-      .from('transfers')
-      .insert({
-        created_by: session.user.id, // TODO: use db trigger
-        assets: result.assets.map((a) => ({
-          uri: a.uri,
-          name: a.name,
-          size: a.size ?? 0,
-          mimeType: a.mimeType,
-        })),
-        offer_sdp: offer.sdp,
-      })
-      .select('id')
-      .single();
-
-    if (transfer.error) {
-      console.error('Error creating transfer:', transfer.error);
-      pc.close();
+    if (created.failed) {
+      console.error('Error creating transfer:', created.error);
       return;
     }
 
-    const transferId = transfer.data.id;
-    setTransferId(transferId);
-
-    const files = result.assets.map((a) => new File(a.uri));
-    const transfersDir = new Directory(Paths.document, 'transfers');
-    if (!transfersDir.exists) {
-      transfersDir.create();
+    const transferId = created.data.id;
+    const copied = copyAssetsToDocumentDir(transferId, result.assets);
+    if (copied.failed) {
+      console.error('Error moving assets to document directory:', copied.error);
+      return;
     }
 
-    const transferIdDir = new Directory(transfersDir, transferId);
-    if (!transferIdDir.exists) {
-      transferIdDir.create();
-    }
-    for (const file of files) {
-      file.move(transferIdDir);
-    }
+    router.navigate(`/transfers/${transferId}`);
 
-    await new Promise<void>((resolve) => {
-      pc.addEventListener('icecandidate', async (event) => {
-        console.warn('ICE candidate:', event.candidate);
-        if (event.candidate == null) {
-          resolve();
-          return;
-        }
-        const insert = await supabase.from('transfer_candidates').insert({
-          transfer_id: transferId,
-          peer: 'offer',
-          candidate: JSON.stringify(event.candidate),
-        });
-        if (insert.error) {
-          console.error('Error inserting offer ICE candidate:', insert.error);
-        }
-      });
-    });
+    // await new Promise<void>((resolve) => {
+    //   pc.addEventListener('icecandidate', async (event) => {
+    //     console.warn('ICE candidate:', event.candidate);
+    //     if (event.candidate == null) {
+    //       resolve();
+    //       return;
+    //     }
+    //     const insert = await supabase.from('transfer_candidates').insert({
+    //       transfer_id: transferId,
+    //       peer: 'offer',
+    //       candidate: JSON.stringify(event.candidate),
+    //     });
+    //     if (insert.error) {
+    //       console.error('Error inserting offer ICE candidate:', insert.error);
+    //     }
+    //   });
+    // });
   };
 
   return (
@@ -116,9 +97,6 @@ export default function Index() {
           textStyle={styles.buttonText}
           onPress={handlePress}
         />
-        {transferId != null && (
-          <QRCode value={`justdrop://transfers/${transferId}`} />
-        )}
       </SafeAreaView>
     </ScrollView>
   );
@@ -148,4 +126,41 @@ const useStyles = () => {
       },
     };
   }, []);
+};
+
+const createTransfer =
+  (supabase: AppSupabase) =>
+  async (values: Database['public']['Tables']['transfers']['Insert']) => {
+    const transfer = await supabase
+      .from('transfers')
+      .insert(values)
+      .select('id')
+      .single();
+
+    if (transfer.error) {
+      console.error('Error creating transfer:', transfer.error);
+      return attempt.fail(transfer.error);
+    }
+
+    return attempt.ok(transfer.data);
+  };
+
+const copyAssetsToDocumentDir = (
+  transferId: string,
+  assets: DocumentPickerAsset[]
+) => {
+  return attempt.sync(() => {
+    const files = assets.map((a) => new File(a.uri));
+    const transferIdDir = new Directory(
+      Paths.document,
+      'transfers',
+      transferId
+    );
+    if (!transferIdDir.exists) {
+      transferIdDir.create({ intermediates: true });
+    }
+    for (const file of files) {
+      file.copy(transferIdDir);
+    }
+  })();
 };

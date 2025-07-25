@@ -24,7 +24,9 @@ export default function Layout() {
           headerLargeTitleStyle: styles.headerLargeTitle,
         }}
       >
-        <Stack.Screen name="index" options={{ title: 'JustDrop' }} />
+        <Stack.Screen name="index" options={{ title: 'Home', headerShown: false }} />
+        <Stack.Screen name="transfers/[id]/index" options={{ title: 'Transfer Details' }} />
+        <Stack.Screen name="transfers/[id]/receive/index" options={{ title: 'Receive Transfer', headerShown: false }} />
       </Stack>
     </>
   );

@@ -3,6 +3,7 @@ import { ServicesProvider } from '@/lib/components/ServicesProvider';
 import { useApp } from '@/lib/stores/app';
 import { useServices } from '@/lib/stores/services';
 import { createSupabase } from '@/lib/supabase';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Slot } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 
@@ -13,7 +14,11 @@ export default function RootLayout() {
     <ServicesProvider supabase={supabase}>
       <ConfigInitializer />
       <SessionInitializer onInitialized={() => setSessionInitialized(true)} />
-      {sessionInitialized && <Slot />}
+      {sessionInitialized && (
+        <QueryClientProvider client={queryClient}>
+          <Slot />
+        </QueryClientProvider>
+      )}
     </ServicesProvider>
   );
 }
@@ -46,3 +51,5 @@ const supabase = createSupabase(
   process.env.EXPO_PUBLIC_SUPABASE_URL!,
   process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!
 );
+
+const queryClient = new QueryClient();

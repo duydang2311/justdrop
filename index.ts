@@ -1,5 +1,3 @@
-import 'expo-dev-client';
-
 if (process.env.EXPO_PUBLIC_SUPABASE_URL == null) {
   throw new Error('Missing EXPO_PUBLIC_SUPABASE_URL');
 }

@@ -53,7 +53,7 @@ export type Database = {
           created_at: string
           created_by: string
           id: string
-          offer_sdp: string
+          offer_sdp: string | null
         }
         Insert: {
           answer_sdp?: string | null
@@ -61,7 +61,7 @@ export type Database = {
           created_at?: string
           created_by: string
           id?: string
-          offer_sdp: string
+          offer_sdp?: string | null
         }
         Update: {
           answer_sdp?: string | null
@@ -69,7 +69,7 @@ export type Database = {
           created_at?: string
           created_by?: string
           id?: string
-          offer_sdp?: string
+          offer_sdp?: string | null
         }
         Relationships: []
       }

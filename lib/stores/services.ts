@@ -1,10 +1,9 @@
-import { SupabaseClient } from '@supabase/supabase-js';
 import { createContext, useContext } from 'react';
 import { createStore, useStore } from 'zustand';
-import { Database } from '../supabase-types';
+import { AppSupabase } from '../supabase';
 
 export interface Services {
-  readonly supabase: SupabaseClient<Database>;
+  readonly supabase: AppSupabase;
 }
 
 export const ServicesContext = createContext<ServicesStore | null>(null);

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "my-app",
-    "slug": "my-app",
+    "name": "justdrop",
+    "slug": "justdrop",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -11,7 +11,7 @@
     "ios": {
       "supportsTablet": true,
       "usesIcloudStorage": true,
-      "bundleIdentifier": "com.anonymous.myapp",
+      "bundleIdentifier": "com.duydang2311.justdrop",
       "config": {
         "usesNonExemptEncryption": false
       }
@@ -22,7 +22,7 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.anonymous.myapp"
+      "package": "com.duydang2311.justdrop"
     },
     "web": {
       "bundler": "metro",

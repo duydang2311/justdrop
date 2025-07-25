@@ -84,7 +84,7 @@ const useVariantStyles = (variant: ButtonVariant) => {
         default:
           return {
             button: {
-              backgroundColor: theme.colors.base_2,
+              backgroundColor: theme.colors.base_dark,
             },
             text: {
               color: theme.colors.base_fg,
