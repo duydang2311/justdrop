@@ -1,5 +1,6 @@
 import ThemedButton from '@/lib/components/ThemedButton';
 import ThemedH2 from '@/lib/components/ThemedH2';
+import ThemedScreenView from '@/lib/components/ThemedScreenView';
 import ThemedText from '@/lib/components/ThemedText';
 import { useApp } from '@/lib/stores/app';
 import { useServices } from '@/lib/stores/services';
@@ -13,7 +14,7 @@ import {
 } from 'expo-document-picker';
 import { Directory, File, Paths } from 'expo-file-system/next';
 import { useRouter } from 'expo-router';
-import { SafeAreaView, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 import invariant from 'tiny-invariant';
 
 import type { } from 'react-native-webrtc';
@@ -92,7 +93,7 @@ export default function Index() {
       style={[styles.scrollView]}
       contentContainerStyle={styles.scrollViewContentContainer}
     >
-      <SafeAreaView style={[styles.safeAreaView]}>
+      <ThemedScreenView style={styles.container}>
         <ThemedH2>Transfer files</ThemedH2>
         <ThemedText>Direct file sharing between devices</ThemedText>
         <ThemedButton
@@ -101,7 +102,7 @@ export default function Index() {
           textStyle={styles.buttonText}
           onPress={handlePress}
         />
-      </SafeAreaView>
+      </ThemedScreenView>
     </ScrollView>
   );
 }
@@ -117,7 +118,7 @@ const useStyles = () => {
         justifyContent: 'center',
         alignItems: 'center',
       },
-      safeAreaView: {
+      container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',

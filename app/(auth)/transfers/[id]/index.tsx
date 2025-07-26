@@ -1,4 +1,5 @@
 import ThemedH2 from '@/lib/components/ThemedH2';
+import ThemedScreenView from '@/lib/components/ThemedScreenView';
 import ThemedText from '@/lib/components/ThemedText';
 import TransferFileListBottomSheet from '@/lib/components/TransferFileListBottomSheet';
 import { useTransferQuery } from '@/lib/queries';
@@ -57,7 +58,7 @@ function TransferDetailsView({
 
   return (
     <GestureHandlerRootView>
-      <SafeAreaView style={styles.container}>
+      <ThemedScreenView style={styles.container}>
         <ThemedH2>Scan to Download</ThemedH2>
         <ThemedText style={styles.text}>
           Other devices can scan to receive files
@@ -68,8 +69,8 @@ function TransferDetailsView({
             size={256}
           />
         </View>
-        <TransferFileListBottomSheet assets={transfer.assets} />
-      </SafeAreaView>
+      </ThemedScreenView>
+      <TransferFileListBottomSheet assets={transfer.assets} />
     </GestureHandlerRootView>
   );
 }
@@ -83,7 +84,6 @@ const useStyles = () => {
   return useThemedStyleSheet((theme) => {
     return {
       container: {
-        backgroundColor: theme.colors.base,
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
