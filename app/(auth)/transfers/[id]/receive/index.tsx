@@ -1,3 +1,4 @@
+import ThemedActivityIndicator from '@/lib/components/ThemedActivityIndicator';
 import ThemedButton from '@/lib/components/ThemedButton';
 import ThemedScreenView from '@/lib/components/ThemedScreenView';
 import ThemedText from '@/lib/components/ThemedText';
@@ -8,7 +9,7 @@ import type { Database } from '@/lib/supabase-types';
 import { useThemedStyleSheet } from '@/lib/theme';
 import { useLocalSearchParams } from 'expo-router';
 import { useMemo } from 'react';
-import { ActivityIndicator, FlatList, SafeAreaView, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import invariant from 'tiny-invariant';
 
@@ -18,29 +19,28 @@ export default function Index() {
   invariant(typeof id === 'string', 'id must be a string');
 
   const { isPending, error, data } = useTransferQuery(id);
-  const styles = useStyles();
 
   if (isPending) {
     return (
-      <SafeAreaView style={styles.container}>
-        <ActivityIndicator />
-      </SafeAreaView>
+      <ThemedScreenView style={styles.container}>
+        <ThemedActivityIndicator />
+      </ThemedScreenView>
     );
   }
 
   if (error) {
     return (
-      <SafeAreaView style={styles.container}>
+      <ThemedScreenView style={styles.container}>
         <ThemedText>Error: {error.message}</ThemedText>
-      </SafeAreaView>
+      </ThemedScreenView>
     );
   }
 
   if (data == null) {
     return (
-      <SafeAreaView style={styles.container}>
+      <ThemedScreenView style={styles.container}>
         <ThemedText>Transfer not found</ThemedText>
-      </SafeAreaView>
+      </ThemedScreenView>
     );
   }
 
@@ -115,18 +115,13 @@ function ReceiveTransferView({
   );
 }
 
-const useStyles = () => {
-  return useThemedStyleSheet((theme) => {
-    return {
-      container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: theme.colors.base,
-      },
-    };
-  }, []);
-};
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
 
 const useReceiveTransferViewStyles = () => {
   return useThemedStyleSheet((theme) => {

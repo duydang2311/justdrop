@@ -14,7 +14,6 @@ import {
 } from 'expo-document-picker';
 import { Directory, File, Paths } from 'expo-file-system/next';
 import { useRouter } from 'expo-router';
-import { ScrollView } from 'react-native';
 import invariant from 'tiny-invariant';
 
 import type { } from 'react-native-webrtc';
@@ -89,21 +88,16 @@ export default function Index() {
   };
 
   return (
-    <ScrollView
-      style={[styles.scrollView]}
-      contentContainerStyle={styles.scrollViewContentContainer}
-    >
-      <ThemedScreenView style={styles.container}>
-        <ThemedH2>Transfer files</ThemedH2>
-        <ThemedText>Direct file sharing between devices</ThemedText>
-        <ThemedButton
-          title="Choose files"
-          style={styles.button}
-          textStyle={styles.buttonText}
-          onPress={handlePress}
-        />
-      </ThemedScreenView>
-    </ScrollView>
+    <ThemedScreenView style={styles.container}>
+      <ThemedH2>Transfer files</ThemedH2>
+      <ThemedText>Direct file sharing between devices</ThemedText>
+      <ThemedButton
+        title="Choose files"
+        style={styles.button}
+        textStyle={styles.buttonText}
+        onPress={handlePress}
+      />
+    </ThemedScreenView>
   );
 }
 
@@ -111,6 +105,7 @@ const useStyles = () => {
   return useThemedStyleSheet((theme) => {
     return {
       scrollView: {
+        flex: 1,
         backgroundColor: theme.colors.base,
       },
       scrollViewContentContainer: {

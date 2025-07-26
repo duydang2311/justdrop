@@ -1,3 +1,4 @@
+import ThemedActivityIndicator from '@/lib/components/ThemedActivityIndicator';
 import ThemedH2 from '@/lib/components/ThemedH2';
 import ThemedScreenView from '@/lib/components/ThemedScreenView';
 import ThemedText from '@/lib/components/ThemedText';
@@ -7,10 +8,9 @@ import type { Database } from '@/lib/supabase-types';
 import { useThemedStyleSheet } from '@/lib/theme';
 import Constants from 'expo-constants';
 import { useLocalSearchParams } from 'expo-router';
-import { ActivityIndicator, View } from 'react-native';
+import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import QRCode from 'react-native-qrcode-svg';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import invariant from 'tiny-invariant';
 
 export default function Index() {
@@ -22,25 +22,25 @@ export default function Index() {
   const { isPending, error, data } = useTransferQuery(id);
   if (isPending) {
     return (
-      <SafeAreaView style={styles.container}>
-        <ActivityIndicator />
-      </SafeAreaView>
+      <ThemedScreenView style={styles.container}>
+        <ThemedActivityIndicator size="large" />
+      </ThemedScreenView>
     );
   }
 
   if (error) {
     return (
-      <SafeAreaView style={styles.container}>
+      <ThemedScreenView style={styles.container}>
         <ThemedText>Error: {error.message}</ThemedText>
-      </SafeAreaView>
+      </ThemedScreenView>
     );
   }
 
   if (data == null) {
     return (
-      <SafeAreaView style={styles.container}>
+      <ThemedScreenView style={styles.container}>
         <ThemedText>Transfer not found</ThemedText>
-      </SafeAreaView>
+      </ThemedScreenView>
     );
   }
 
@@ -98,7 +98,7 @@ const useStyles = () => {
         borderWidth: 1,
         borderColor: theme.colors.base_border,
         padding: 8,
-        borderRadius: 8,
+        borderRadius: theme.radius.lg,
       },
     };
   }, []);
