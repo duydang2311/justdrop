@@ -2,6 +2,7 @@ import 'react-native-url-polyfill/auto';
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import * as SecureStore from 'expo-secure-store';
+import type { Database } from './supabase-types';
 
 export type AppSupabase = SupabaseClient<Database>;
 

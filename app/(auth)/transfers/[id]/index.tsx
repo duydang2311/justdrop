@@ -1,16 +1,11 @@
 import ThemedH2 from '@/lib/components/ThemedH2';
 import ThemedText from '@/lib/components/ThemedText';
-import { formatMimeType, formatSize } from '@/lib/formats';
+import TransferFileListBottomSheet from '@/lib/components/TransferFileListBottomSheet';
 import { useTransferQuery } from '@/lib/queries';
 import type { Database } from '@/lib/supabase-types';
 import { useThemedStyleSheet } from '@/lib/theme';
-import BottomSheet, {
-  BottomSheetFlatList,
-  BottomSheetView,
-} from '@gorhom/bottom-sheet';
 import Constants from 'expo-constants';
 import { useLocalSearchParams } from 'expo-router';
-import { useMemo, useRef } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import QRCode from 'react-native-qrcode-svg';
@@ -73,50 +68,9 @@ function TransferDetailsView({
             size={256}
           />
         </View>
-        <FileListBottomSheet assets={transfer.assets} />
+        <TransferFileListBottomSheet assets={transfer.assets} />
       </SafeAreaView>
     </GestureHandlerRootView>
-  );
-}
-
-function FileListBottomSheet({
-  assets,
-}: {
-  assets: Database['public']['Tables']['transfers']['Row']['assets'];
-}) {
-  const styles = useBottomSheetStyles();
-  const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => ['20%', '50%', '80%'], []);
-
-  return (
-    <BottomSheet
-      ref={bottomSheetRef}
-      enableDynamicSizing={false}
-      backgroundStyle={styles.background}
-      handleIndicatorStyle={styles.handleIndicator}
-      snapPoints={snapPoints}
-    >
-      <BottomSheetView style={styles.contentContainer}>
-        <ThemedH2>File List</ThemedH2>
-        <ThemedText style={styles.helpText}>
-          {assets.length} files •{' '}
-          {formatSize(assets.reduce((total, asset) => total + asset.size, 0))}
-        </ThemedText>
-        <BottomSheetFlatList
-          style={styles.list}
-          data={assets}
-          ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
-          renderItem={({ item }) => (
-            <View>
-              <ThemedText>{item.name}</ThemedText>
-              <ThemedText style={styles.listItemBottomText}>
-                {formatSize(item.size)} • {formatMimeType(item.mimeType)}
-              </ThemedText>
-            </View>
-          )}
-        />
-      </BottomSheetView>
-    </BottomSheet>
   );
 }
 
@@ -145,47 +99,6 @@ const useStyles = () => {
         borderColor: theme.colors.base_border,
         padding: 8,
         borderRadius: 8,
-      },
-    };
-  }, []);
-};
-
-const useBottomSheetStyles = () => {
-  return useThemedStyleSheet((theme) => {
-    return {
-      background: {
-        backgroundColor: theme.colors.base_light,
-        borderWidth: 1,
-        borderColor: theme.colors.base_border,
-        shadowRadius: 8,
-        shadowColor: theme.colors.base_fg,
-      },
-      handleIndicator: {
-        backgroundColor: theme.resolve(
-          theme.colors.base_fg,
-          theme.colors.base_fg_muted
-        ),
-      },
-      contentContainer: {
-        paddingBlock: 8,
-        paddingInline: 16,
-      },
-      helpText: {
-        marginBlockStart: 8,
-        color: theme.resolve(
-          theme.colors.base_fg_light,
-          theme.colors.base_fg_dark
-        ),
-      },
-      list: {
-        marginTop: 16,
-      },
-      listItemBottomText: {
-        marginTop: 4,
-        color: theme.resolve(
-          theme.colors.base_fg_light,
-          theme.colors.base_fg_dark
-        ),
       },
     };
   }, []);

@@ -1,10 +1,10 @@
 import {
   Pressable,
-  PressableProps,
-  StyleProp,
+  type PressableProps,
+  type StyleProp,
   StyleSheet,
   Text,
-  TextStyle,
+  type TextStyle,
 } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -84,7 +84,7 @@ const useVariantStyles = (variant: ButtonVariant) => {
         default:
           return {
             button: {
-              backgroundColor: theme.colors.base_dark,
+              backgroundColor: theme.resolve(theme.colors.base_dark, theme.colors.base_light),
             },
             text: {
               color: theme.colors.base_fg,

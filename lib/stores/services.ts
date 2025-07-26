@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 import { createStore, useStore } from 'zustand';
-import { AppSupabase } from '../supabase';
+import type { AppSupabase } from '../supabase';
 
 export interface Services {
   readonly supabase: AppSupabase;

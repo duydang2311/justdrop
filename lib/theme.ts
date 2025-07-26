@@ -1,5 +1,5 @@
-import { DependencyList, useCallback, useMemo } from 'react';
-import { ColorValue, StyleSheet } from 'react-native';
+import { type DependencyList, useCallback, useMemo } from 'react';
+import { type ColorValue, StyleSheet } from 'react-native';
 import { useApp } from './stores/app';
 
 export type Theme = typeof themeBase & {
@@ -21,6 +21,12 @@ const themeBase = {
     p: 16,
     small: 14,
   },
+  radius: {
+    sm: 4,
+    md: 8,
+    lg: 12,
+    xl: 16,
+  },
 };
 
 const theme = {
@@ -29,7 +35,7 @@ const theme = {
       base_light: 'hsl(30 0% 100%)',
       base: 'hsl(30 0% 96%)',
       base_dark: 'hsl(30 0% 90%)',
-      base_fg: 'hsl(30 0% 6%)',
+      base_fg: 'hsl(30 0% 10%)',
       base_fg_light: 'hsl(30 0% 30%)',
       base_fg_dark: 'hsl(30 0% 0%)',
       base_fg_muted: 'hsl(30 0% 60%)',
@@ -43,7 +49,7 @@ const theme = {
       base_light: 'hsl(30 0% 8%)',
       base: 'hsl(30 0% 4%)',
       base_dark: 'hsl(30 0% 0%)',
-      base_fg: 'hsl(30 0% 94%)',
+      base_fg: 'hsl(30 0% 90%)',
       base_fg_light: 'hsl(30 0% 100%)',
       base_fg_dark: 'hsl(30 0% 70%)',
       base_fg_muted: 'hsl(30 0% 30%)',
@@ -67,8 +73,8 @@ export const useTheme = () => {
         return colorScheme === 'light';
       },
       resolve(lightOrDark: unknown, dark?: unknown) {
-        return dark == null ? lightOrDark : (this.isLight ? lightOrDark : dark);
-      }
+        return dark == null ? lightOrDark : this.isLight ? lightOrDark : dark;
+      },
     }),
     [colorScheme]
   );
