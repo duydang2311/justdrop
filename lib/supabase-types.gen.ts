@@ -46,30 +46,59 @@ export type Database = {
           },
         ]
       }
-      transfers: {
+      transfer_peers: {
         Row: {
           answer_sdp: string | null
+          created_at: string
+          id: string
+          offer_sdp: string | null
+          status: Database["public"]["Enums"]["transfer_peer_status"]
+          transfer_id: string
+        }
+        Insert: {
+          answer_sdp?: string | null
+          created_at?: string
+          id?: string
+          offer_sdp?: string | null
+          status?: Database["public"]["Enums"]["transfer_peer_status"]
+          transfer_id: string
+        }
+        Update: {
+          answer_sdp?: string | null
+          created_at?: string
+          id?: string
+          offer_sdp?: string | null
+          status?: Database["public"]["Enums"]["transfer_peer_status"]
+          transfer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transfer_peers_transfer_id_fkey"
+            columns: ["transfer_id"]
+            isOneToOne: false
+            referencedRelation: "transfers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transfers: {
+        Row: {
           assets: Json
           created_at: string
           created_by: string
           id: string
-          offer_sdp: string | null
         }
         Insert: {
-          answer_sdp?: string | null
           assets: Json
           created_at?: string
           created_by: string
           id?: string
-          offer_sdp?: string | null
         }
         Update: {
-          answer_sdp?: string | null
           assets?: Json
           created_at?: string
           created_by?: string
           id?: string
-          offer_sdp?: string | null
         }
         Relationships: []
       }
@@ -81,7 +110,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      transfer_peer_status: "pending" | "offered" | "answered" | "closed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -208,6 +237,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      transfer_peer_status: ["pending", "offered", "answered", "closed"],
+    },
   },
 } as const

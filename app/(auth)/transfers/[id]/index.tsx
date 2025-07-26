@@ -1,5 +1,6 @@
 import ThemedH2 from '@/lib/components/ThemedH2';
 import ThemedText from '@/lib/components/ThemedText';
+import { formatMimeType, formatSize } from '@/lib/formats';
 import { useTransferQuery } from '@/lib/queries';
 import type { Database } from '@/lib/supabase-types';
 import { useThemedStyleSheet } from '@/lib/theme';
@@ -118,20 +119,6 @@ function FileListBottomSheet({
     </BottomSheet>
   );
 }
-
-const formatSize = (size: number) => {
-  if (size < 1024) return `${size} B`;
-  if (size < 1024 * 1024) return `${(size / 1024).toFixed(2)} KB`;
-  if (size < 1024 * 1024 * 1024)
-    return `${(size / (1024 * 1024)).toFixed(2)} MB`;
-  return `${(size / (1024 * 1024 * 1024)).toFixed(2)} GB`;
-};
-
-const formatMimeType = (mimeType?: string) => {
-  if (!mimeType) return 'Unknown';
-  const parts = mimeType.split('/');
-  return parts.length > 1 ? parts[1].toUpperCase() : mimeType.toUpperCase();
-};
 
 const getScheme = () => {
   const scheme = Constants.expoConfig?.scheme;
