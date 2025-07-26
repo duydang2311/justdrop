@@ -3,17 +3,20 @@ import ThemedH2 from '@/lib/components/ThemedH2';
 import ThemedText from '@/lib/components/ThemedText';
 import { useApp } from '@/lib/stores/app';
 import { useServices } from '@/lib/stores/services';
-import { AppSupabase } from '@/lib/supabase';
-import { Database } from '@/lib/supabase-types';
+import type { AppSupabase } from '@/lib/supabase';
+import type { Database } from '@/lib/supabase-types';
 import { useThemedStyleSheet } from '@/lib/theme';
 import { attempt } from '@duydang2311/attempt';
-import { DocumentPickerAsset, getDocumentAsync } from 'expo-document-picker';
+import {
+  type DocumentPickerAsset,
+  getDocumentAsync,
+} from 'expo-document-picker';
 import { Directory, File, Paths } from 'expo-file-system/next';
 import { useRouter } from 'expo-router';
 import { SafeAreaView, ScrollView } from 'react-native';
-import type { } from 'react-native-webrtc';
 import invariant from 'tiny-invariant';
 
+import type { } from 'react-native-webrtc';
 declare module 'react-native-webrtc' {
   interface RTCPeerConnection {
     addEventListener(
@@ -43,7 +46,8 @@ export default function Index() {
 
     const created = await createTransfer(supabase)({
       created_by: session.user.id, // TODO: use db trigger
-      assets: result.assets.map((a) => ({
+      assets: result.assets.map((a, i) => ({
+        id: i + 1,
         name: a.name,
         size: a.size ?? 0,
         mimeType: a.mimeType,

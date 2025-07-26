@@ -9,7 +9,7 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint",
-    "gen-supabase": "supabase gen types typescript --project-id fksazuzaqipvqxuophee --schema public > ./lib/supabase-types.ts"
+    "gen-supabase": "supabase gen types typescript --project-id fksazuzaqipvqxuophee --schema public > ./lib/supabase-types.gen.ts"
   },
   "dependencies": {
     "@config-plugins/react-native-webrtc": "^12.0.0",
@@ -66,6 +66,7 @@
     "eslint-config-expo": "~9.2.0",
     "eslint-plugin-react-hooks": "^6.0.0-rc.1",
     "supabase": "^2.31.8",
+    "type-fest": "^4.41.0",
     "typescript": "~5.8.3"
   },
   "private": true

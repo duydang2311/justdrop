@@ -1,11 +1,11 @@
 import ThemedH2 from '@/lib/components/ThemedH2';
 import ThemedText from '@/lib/components/ThemedText';
 import { useTransferQuery } from '@/lib/queries';
-import { Database } from '@/lib/supabase-types';
+import type { Database } from '@/lib/supabase-types';
 import { useThemedStyleSheet } from '@/lib/theme';
 import BottomSheet, {
-    BottomSheetFlatList,
-    BottomSheetView,
+  BottomSheetFlatList,
+  BottomSheetView,
 } from '@gorhom/bottom-sheet';
 import Constants from 'expo-constants';
 import { useLocalSearchParams } from 'expo-router';
@@ -86,10 +86,6 @@ function FileListBottomSheet({
   const styles = useBottomSheetStyles();
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ['20%', '50%', '80%'], []);
-  const safeAssets = useMemo(
-    () => (assets as { name: string; size: number; mimeType?: string }[]) ?? [],
-    [assets]
-  );
 
   return (
     <BottomSheet
@@ -102,14 +98,12 @@ function FileListBottomSheet({
       <BottomSheetView style={styles.contentContainer}>
         <ThemedH2>File List</ThemedH2>
         <ThemedText style={styles.helpText}>
-          {safeAssets.length} files •{' '}
-          {formatSize(
-            safeAssets.reduce((total, asset) => total + asset.size, 0)
-          )}
+          {assets.length} files •{' '}
+          {formatSize(assets.reduce((total, asset) => total + asset.size, 0))}
         </ThemedText>
         <BottomSheetFlatList
           style={styles.list}
-          data={safeAssets}
+          data={assets}
           ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
           renderItem={({ item }) => (
             <View>
