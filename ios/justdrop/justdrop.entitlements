@@ -6,7 +6,7 @@
     <string>Production</string>
     <key>com.apple.developer.icloud-container-identifiers</key>
     <array>
-      <string>iCloud.com.anonymous.myapp</string>
+      <string>iCloud.com.duydang2311.justdrop</string>
     </array>
     <key>com.apple.developer.icloud-services</key>
     <array>
@@ -14,9 +14,9 @@
     </array>
     <key>com.apple.developer.ubiquity-container-identifiers</key>
     <array>
-      <string>iCloud.com.anonymous.myapp</string>
+      <string>iCloud.com.duydang2311.justdrop</string>
     </array>
     <key>com.apple.developer.ubiquity-kvstore-identifier</key>
-    <string>$(TeamIdentifierPrefix)com.anonymous.myapp</string>
+    <string>$(TeamIdentifierPrefix)com.duydang2311.justdrop</string>
   </dict>
 </plist>
