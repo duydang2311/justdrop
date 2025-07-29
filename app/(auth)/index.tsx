@@ -36,7 +36,7 @@ export default function Index() {
 
   const handlePress = async () => {
     const result = await getDocumentAsync({
-      copyToCacheDirectory: false,
+      copyToCacheDirectory: true,
       multiple: true,
     });
 
