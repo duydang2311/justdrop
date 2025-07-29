@@ -13,19 +13,6 @@ export default function ConfigInitializer() {
   );
 
   useEffect(() => {
-    console.log('systemColorScheme:', systemColorScheme);
-  }, [systemColorScheme]);
-
-  useEffect(() => {
-    const sub = Appearance.addChangeListener(({ colorScheme }) => {
-      console.log('Color scheme changed:', colorScheme);
-    });
-    return () => {
-      sub.remove();
-    };
-  }, []);
-
-  useEffect(() => {
     if (preferredColorScheme === 'system') {
       setColorScheme(systemColorScheme ?? 'light');
       Appearance.setColorScheme(null);

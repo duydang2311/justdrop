@@ -1,9 +1,9 @@
 import { useRef } from 'react';
 import {
   createServicesStore,
-  Services,
+  type Services,
   ServicesContext,
-  ServicesStore,
+  type ServicesStore,
 } from '../stores/services';
 
 export function ServicesProvider({

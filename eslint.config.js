@@ -5,6 +5,9 @@ const expoConfig = require('eslint-config-expo/flat');
 module.exports = defineConfig([
   expoConfig,
   {
+    extends: ['plugin:import/typescript'],
+  },
+  {
     ignores: ['dist/*'],
   },
   {
@@ -12,9 +15,9 @@ module.exports = defineConfig([
       'react-hooks/exhaustive-deps': [
         'warn',
         {
-          additionalHooks: '(useThemedStyleSheet)'
-        }
-      ]
-    }
-  }
+          additionalHooks: '(useThemedStyleSheet)',
+        },
+      ],
+    },
+  },
 ]);

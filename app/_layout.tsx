@@ -1,5 +1,6 @@
 import ConfigInitializer from '@/lib/components/ConfigInitializer';
 import { ServicesProvider } from '@/lib/components/ServicesProvider';
+import { TransferPeerManager } from '@/lib/services/transfer-peer-manager';
 import { useApp } from '@/lib/stores/app';
 import { useServices } from '@/lib/stores/services';
 import { createSupabase } from '@/lib/supabase';
@@ -10,8 +11,18 @@ import { useEffect, useRef, useState } from 'react';
 export default function RootLayout() {
   const [sessionInitialized, setSessionInitialized] = useState(false);
 
+  useEffect(() => {
+    return () => {
+      supabase.removeAllChannels().catch(console.error);
+      transferPeerManager.dispose();
+    };
+  });
+
   return (
-    <ServicesProvider supabase={supabase}>
+    <ServicesProvider
+      supabase={supabase}
+      transferPeerManager={transferPeerManager}
+    >
       <ConfigInitializer />
       <SessionInitializer onInitialized={() => setSessionInitialized(true)} />
       {sessionInitialized && (
@@ -37,7 +48,6 @@ function SessionInitializer({ onInitialized }: { onInitialized: () => void }) {
         initializedRef.current = true;
         onInitialized();
       }
-      console.log('Auth state changed:', _e, session);
       setSession(session);
     });
     return () => {
@@ -51,5 +61,7 @@ const supabase = createSupabase(
   process.env.EXPO_PUBLIC_SUPABASE_URL!,
   process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!
 );
+
+const transferPeerManager = new TransferPeerManager(supabase);
 
 const queryClient = new QueryClient();

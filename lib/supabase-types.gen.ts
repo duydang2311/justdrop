@@ -14,34 +14,41 @@ export type Database = {
   }
   public: {
     Tables: {
-      transfer_candidates: {
+      transfer_peer_candidates: {
         Row: {
           candidate: Json
           created_at: string
           id: string
-          peer: string
-          transfer_id: string
+          peer: Database["public"]["Enums"]["transfer_candidate_peer"]
+          transfer_peer_id: string
         }
         Insert: {
           candidate: Json
           created_at?: string
           id?: string
-          peer: string
-          transfer_id: string
+          peer: Database["public"]["Enums"]["transfer_candidate_peer"]
+          transfer_peer_id: string
         }
         Update: {
           candidate?: Json
           created_at?: string
           id?: string
-          peer?: string
-          transfer_id?: string
+          peer?: Database["public"]["Enums"]["transfer_candidate_peer"]
+          transfer_peer_id?: string
         }
         Relationships: [
           {
             foreignKeyName: "transfer_ice_candidates_transfer_id_fkey"
-            columns: ["transfer_id"]
+            columns: ["transfer_peer_id"]
             isOneToOne: false
             referencedRelation: "transfers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transfer_peer_candidates_transfer_peer_id_fkey"
+            columns: ["transfer_peer_id"]
+            isOneToOne: false
+            referencedRelation: "transfer_peers"
             referencedColumns: ["id"]
           },
         ]
@@ -110,6 +117,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      transfer_candidate_peer: "offer" | "answer"
       transfer_peer_status: "pending" | "offered" | "answered" | "closed"
     }
     CompositeTypes: {
@@ -238,6 +246,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      transfer_candidate_peer: ["offer", "answer"],
       transfer_peer_status: ["pending", "offered", "answered", "closed"],
     },
   },

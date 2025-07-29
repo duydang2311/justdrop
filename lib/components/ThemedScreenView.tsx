@@ -1,15 +1,20 @@
 import { SafeAreaView, ScrollView, View, type ViewProps } from 'react-native';
 import { useThemedStyleSheet } from '../theme';
 
-export default function ThemedScreenView({ style, ...props }: ViewProps) {
+interface Props extends ViewProps {
+  scroll?: boolean;
+}
+
+export default function ThemedScreenView({ style, scroll, ...props }: Props) {
   const styles = useStyles();
-  return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollView}>
-        <View style={[styles.content, style]} {...props} />
-      </ScrollView>
-    </SafeAreaView>
+  const content = scroll ? (
+    <ScrollView contentContainerStyle={styles.scrollView}>
+      <View style={[styles.content, style]} {...props} />
+    </ScrollView>
+  ) : (
+    <View style={[styles.content, style]} {...props} />
   );
+  return <SafeAreaView style={styles.container}>{content}</SafeAreaView>;
 }
 
 const useStyles = () => {

@@ -14,6 +14,8 @@ export type Database = MergeDeep<
   }
 >;
 
+export type Tables = Database['public']['Tables'];
+
 type Table<T> = {
   Row: T;
   Insert: MakeNullableOptional<T>;

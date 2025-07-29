@@ -15,20 +15,16 @@ import {
 import { Directory, File, Paths } from 'expo-file-system/next';
 import { useRouter } from 'expo-router';
 import invariant from 'tiny-invariant';
-
-import type { } from 'react-native-webrtc';
-declare module 'react-native-webrtc' {
-  interface RTCPeerConnection {
-    addEventListener(
-      type: 'icecandidate',
-      listener: (event: RTCPeerConnectionIceEvent) => void
-    ): void;
-  }
-}
+import { useShallow } from 'zustand/shallow';
 
 export default function Index() {
   const styles = useStyles();
-  const supabase = useServices((a) => a.supabase);
+  const { supabase, transferPeerManager } = useServices(
+    useShallow(({ supabase, transferPeerManager }) => ({
+      supabase,
+      transferPeerManager,
+    }))
+  );
   const session = useApp((a) => a.session);
   const router = useRouter();
 
@@ -66,25 +62,8 @@ export default function Index() {
       return;
     }
 
+    transferPeerManager.watchAnswer(transferId);
     router.navigate(`/transfers/${transferId}`);
-
-    // await new Promise<void>((resolve) => {
-    //   pc.addEventListener('icecandidate', async (event) => {
-    //     console.warn('ICE candidate:', event.candidate);
-    //     if (event.candidate == null) {
-    //       resolve();
-    //       return;
-    //     }
-    //     const insert = await supabase.from('transfer_candidates').insert({
-    //       transfer_id: transferId,
-    //       peer: 'offer',
-    //       candidate: JSON.stringify(event.candidate),
-    //     });
-    //     if (insert.error) {
-    //       console.error('Error inserting offer ICE candidate:', insert.error);
-    //     }
-    //   });
-    // });
   };
 
   return (

@@ -5,13 +5,16 @@ import ThemedText from '@/lib/components/ThemedText';
 import TransferFileListBottomSheet from '@/lib/components/TransferFileListBottomSheet';
 import { formatMimeType, formatSize } from '@/lib/formats';
 import { useTransferQuery } from '@/lib/queries';
+import { useServices } from '@/lib/stores/services';
 import type { Database } from '@/lib/supabase-types';
 import { useThemedStyleSheet } from '@/lib/theme';
+import { attempt } from '@duydang2311/attempt';
 import { useLocalSearchParams } from 'expo-router';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import invariant from 'tiny-invariant';
+import { useShallow } from 'zustand/shallow';
 
 export default function Index() {
   const { id } = useLocalSearchParams();
@@ -53,29 +56,31 @@ function ReceiveTransferView({
   transfer: Database['public']['Tables']['transfers']['Row'];
 }) {
   const styles = useReceiveTransferViewStyles();
-  const stats = useMemo(
-    () => [
-      {
-        label: 'Total Files',
-        value: transfer.assets.length.toString(),
-      },
-      {
-        label: 'Total Size',
-        value: formatSize(
-          transfer.assets.reduce((total, asset) => total + asset.size, 0)
-        ),
-      },
-      {
-        label: 'File Types',
-        value: Array.from(
-          new Set(transfer.assets.map((asset) => asset.mimeType)).values()
-        )
-          .map(formatMimeType)
-          .join(', '),
-      },
-    ],
-    [transfer.assets]
+  const stats = useStats(transfer.assets);
+  const { supabase, transferPeerManager } = useServices(
+    useShallow(({ supabase, transferPeerManager }) => ({
+      supabase,
+      transferPeerManager,
+    }))
   );
+
+  const handleDownloadFiles = async () => {
+    const inserted = await supabase
+      .from('transfer_peers')
+      .insert({
+        transfer_id: transfer.id,
+        status: 'pending',
+      })
+      .select('id')
+      .single();
+
+    if (inserted.error) {
+      console.error('Failed to insert transfer peer:', inserted.error);
+      return;
+    }
+
+    transferPeerManager.watchOffer(inserted.data.id);
+  };
 
   return (
     <GestureHandlerRootView>
@@ -101,9 +106,7 @@ function ReceiveTransferView({
           variant="primary"
           style={styles.downloadFilesButton}
           title="Download Files"
-          onPress={() => {
-            // TODO: download
-          }}
+          onPress={handleDownloadFiles}
         />
       </ThemedScreenView>
       <TransferFileListBottomSheet
@@ -165,4 +168,48 @@ const useReceiveTransferViewStyles = () => {
       },
     };
   }, []);
+};
+
+const useStats = (
+  assets: Database['public']['Tables']['transfers']['Row']['assets']
+) => {
+  return useMemo(
+    () => [
+      {
+        label: 'Total Files',
+        value: assets.length.toString(),
+      },
+      {
+        label: 'Total Size',
+        value: formatSize(
+          assets.reduce((total, asset) => total + asset.size, 0)
+        ),
+      },
+      {
+        label: 'File Types',
+        value: Array.from(
+          new Set(assets.map((asset) => asset.mimeType)).values()
+        )
+          .map(formatMimeType)
+          .join(', '),
+      },
+    ],
+    [assets]
+  );
+};
+
+const useHandleDownloadFiles = (transferId: string) => {
+  const supabase = useServices((a) => a.supabase);
+  return useCallback(async () => {
+    const inserted = await supabase.from('transfer_peers').insert({
+      transfer_id: transferId,
+      status: 'pending',
+    });
+
+    if (inserted.error) {
+      return attempt.fail(inserted.error);
+    }
+
+    return attempt.ok(inserted.data);
+  }, [supabase, transferId]);
 };

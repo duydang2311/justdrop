@@ -1,9 +1,11 @@
 import { createContext, useContext } from 'react';
 import { createStore, useStore } from 'zustand';
+import type { TransferPeerManager } from '../services/transfer-peer-manager';
 import type { AppSupabase } from '../supabase';
 
 export interface Services {
   readonly supabase: AppSupabase;
+  readonly transferPeerManager: TransferPeerManager;
 }
 
 export const ServicesContext = createContext<ServicesStore | null>(null);
