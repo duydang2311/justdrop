@@ -1,6 +1,6 @@
 {
   "name": "my-app",
-  "main": "index.ts",
+  "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
@@ -16,7 +16,6 @@
     "@duydang2311/attempt": "^0.0.8",
     "@expo/vector-icons": "^14.1.0",
     "@gorhom/bottom-sheet": "^5.1.6",
-    "@hcaptcha/react-hcaptcha": "^1.12.0",
     "@hcaptcha/react-native-hcaptcha": "^2.0.2",
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
@@ -40,7 +39,7 @@
     "expo-symbols": "~0.4.5",
     "expo-system-ui": "~5.0.10",
     "expo-web-browser": "~14.2.0",
-    "qrcode": "^1.5.4",
+    "is-what": "^5.2.1",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-native": "0.79.5",
